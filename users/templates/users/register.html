@@ -1,0 +1,47 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+    <div class="men">
+        <div class="container">
+            <div class="col-md-12 register">
+                <form class="w-2/5 bg-white-700 shadow-md m-10 rounded px-8 pt-6 pb-8 mb-4" method="post">
+                    {% csrf_token %}
+                    <div class="register-top-grid">
+                        <h3>РЕГИСТРАЦИЯ ПОЛЬЗОВАТЕЛЯ</h3>
+                        <div>
+                            <span>Логин<label>*</label></span>
+                            {{ form.username }}
+                        </div>
+                        <div>
+                            <span>Электронная почта<label>*</label></span>
+                            {{ form.email }}
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="register-bottom-grid">
+                        <div>
+                            <span>Пароль<label>*</label></span>
+                            {{ form.password1 }}
+                        </div>
+                        <div>
+                            <span>Повторите пароль<label>*</label></span>
+                            {{ form.password2 }}
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div class="register-but">
+
+                        <input type="submit" value="Submit" class="register-but">
+
+                        <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+{% endblock %}

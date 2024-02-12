@@ -1,0 +1,39 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+    {% load pluralize_result %}
+
+<div class="men">
+	<div class="container">
+	    <div class="wishlist">
+    {% if search_query %}
+        <strong>По вашему запросу: "{{ search_query }}"</strong><br>
+        <strong>
+            {% with results.count as total_results %}
+                Найдено {{ total_results }} {{ total_results|pluralize_result:"результат,результата,результатов" }}
+            {% endwith %}
+        </strong><br><br>
+        <ul>
+            {% for product in results %}
+                <li>
+                    <a href="{% url 'shop:product_detail' product.id %}">{{ product.name }} {{ product.brand_name }}</a>
+                </li>
+            {% empty %}
+                <p>По вашему запросу "{{ search_query }}" ничего не найдено</p>
+            {% endfor %}
+        </ul>
+        <br>
+        <p><a href="{% url "shop:product_search" %}">Искать снова</a></p>
+    {% else %}
+        <h1>Поиск товаров:</h1>
+        <form method="get">
+            {{ form.search_query }}
+            <input type="submit" value="Search">
+        </form>
+    {% endif %}
+        </div>
+	</div>
+</div>
+
+
+{% endblock %}

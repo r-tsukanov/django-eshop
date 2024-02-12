@@ -1,0 +1,33 @@
+{% extends "shop/base.html" %}
+
+{% block title %}
+    Мои заказы
+{% endblock %}
+
+{% block content %}
+
+{% if orders %}
+    <table>
+    {% for order in orders %}
+        <tr>
+            <td>{{ order.first_name }}</td>
+            <td>&nbsp;{{ order.last_name }}</td>
+            <td>&nbsp;{{ order.contact_number }}</td>
+        </tr>
+
+        {% for item in order.items.all %}
+            <tr>
+                <td>{{ item.price }}</td>
+                <td>&nbsp;{{ item.quantity }}</td>
+                <td>&nbsp;{{ item.product.name }} {{ item.product.brand }} Общая сумма заказа: {{ order.get_total_cost }} руб.</td>
+            </tr>
+        {% endfor %}
+    {% endfor %}
+    </table>
+{% else %}
+    <!-- Обработка случая, когда заказов нет -->
+{% endif %}
+
+
+
+{% endblock %}

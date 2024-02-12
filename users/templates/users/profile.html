@@ -1,0 +1,38 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+    <div class="men">
+        <div class="container">
+            <div class="col-md-4 register">
+                <h4 class="title">Профиль пользователя: {{ user.username }}</h4>
+                <br>
+                <div class="register-top-grid">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <label>Имя</label>
+                        <p>{{ profile_form.first_name }}</p>
+                        <label>Фамилия</label>
+                        <p>{{ profile_form.last_name }}</p>
+                        <label>Номер телефона</label>
+                        <p>{{ profile_form.contact_number }}</p>
+                        <label>Эл. почта</label>
+                        <p>{{ user_form.email }}</p>
+                        <label>Город</label>
+                        <p>{{ profile_form.city }}</p>
+                        <label>Адрес</label>
+                        <p>{{ profile_form.address }}</p>
+                        <label>Юзерпик</label>
+                        <p>{{ profile_form.image }}</p>
+                </div>
+                <br>
+                <button class="btn" type="submit">Сохранить</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}

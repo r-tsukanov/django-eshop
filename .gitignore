@@ -1,0 +1,16 @@
+
+# Virtual environment
+venv/
+
+# Django migrations
+*/migrations/
+
+# Local settings
+local_settings.py
+
+# PyCharm settings
+.idea/
+
+# Cache and temporary files
+__pycache__/
+*.pyc

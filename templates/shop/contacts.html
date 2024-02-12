@@ -1,0 +1,60 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- about-us -->
+        <div class="breadcrumb-box">
+                <div class="container">
+                    <div class="menu_box">
+                        <ol class="breadcrumb">
+                            {% for crumb in breadcrumbs %}
+                                <li><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="our">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-12 about-us">
+                            <div class="mission">
+                                <h4>Our Mission</h4>
+                                <p>This lovely green striped dress with ruffles over the shoulders is by French design
+                                    Tartine et Chocolat. Made in soft, fine cotton, it has beautifully embroidered
+                                    dragonflies and sequinned flowers, and there are mother-of-pearl logo button
+                                fasteners on the back. Marco Campomaggi thinks</p>
+                            </div>
+                            <div class="service">
+                                <h4>Our Service</h4>
+                                <ul>
+                                    <li><a href=""><i class="fa fa-circle" aria-hidden="true"></i>Design</a></li>
+                                    <li><a href=""><i class="fa fa-circle" aria-hidden="true"></i>Sale</a></li>
+                                    <li><a href=""><i class="fa fa-circle" aria-hidden="true"></i>Stylist</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12 about-us">
+                            <div class="mission">
+                                <h4>Our Stories</h4>
+                                <p>This lovely green striped dress with ruffles over the shoulders is by French design
+                                    Tartine et Chocolat. Made in soft, fine cotton, it has beautifully embroidered
+                                    dragonflies and sequinned flowers, and there are mother-of-pearl logo button
+                                fasteners on the back. Marco Campomaggi thinks</p>
+                            </div>
+                            <div class="mission">
+                                <h4>Our Vision</h4>
+                                <p>This lovely green striped dress with ruffles over the shoulders is by French design
+                                    Tartine et Chocolat. Made in soft, fine cotton, it has beautifully embroidered
+                                    dragonflies and sequinned flowers, and there are mother-of-pearl logo button
+                                fasteners on the back. Marco Campomaggi thinks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+{% endblock %}

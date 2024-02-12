@@ -1,0 +1,13 @@
+{% extends "shop/base.html" %}
+
+{% block title %}
+    Ваш заказ успешно создан
+{% endblock %}
+
+{% block content %}
+
+    <h1>Благодарим</h1>
+    Ваш заказ успешно создан. Номер вашего заказа <strong>{{ order.id }}</strong><br>
+    Можете отслеживать его статус в вашем <a href="{% url 'orders:my_orders_list' %}">списке заказов</a>
+
+{% endblock %}

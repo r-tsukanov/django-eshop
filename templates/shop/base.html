@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru-RU">
+{% load static %}
+{#загрузка пользовательского фильтра из cart/templatetags/pluralize_ru.py#}
+{% load pluralize_ru %}
+{% load mptt_tags %}
+
+<head>
+<title>{{ title }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<link href="{% static 'css/bootstrap.css' %}" rel='stylesheet' type='text/css' />
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<!-- Custom Theme files -->
+<link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
+<link href="{% static 'css/style.css' %}" rel='stylesheet' type='text/css' />
+<link rel="stylesheet" href="{% static 'css/jquery.countdown.css' %}" />
+<link rel="stylesheet" href="{% static 'css/flexslider.css' %}" type="text/css" media="screen" />
+<!--webfont-->
+<link href='http://fonts.googleapis.com/css?family=Raleway:100,200,300,400,500,600,700,800,900' rel='stylesheet' type='text/css'>
+<!-- Подключение jQuery и jQuery UI -->
+<script type="text/javascript" src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+{#<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>#}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<!-- dropdown -->
+<script src="{% static 'js/jquery.easydropdown.js' %}"></script>
+<!-- start menu -->
+<link href="{% static 'css/megamenu.css' %}" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="{% static 'js/megamenu.js' %}"></script>
+<script>$(document).ready(function(){$(".megamenu").megamenu();});</script>
+<script src="{% static 'js/responsiveslides.min.js' %}"></script>
+<script>
+    $(function () {
+      $("#slider").responsiveSlides({
+      	auto: true,
+      	nav: false,
+      	speed: 500,
+        namespace: "callbacks",
+        pager: true,
+      });
+    });
+</script>
+<script src="{% static 'js/jquery.countdown.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+
+
+
+</head>
+<body>
+<div class="header_top">
+  <div class="container">
+  	<div class="header_top-box">
+     <div class="header-top-left">
+		  <div class="clearfix"></div>
+   			 </div>
+			 <div class="cssmenu">
+				<ul>
+                    {% if user.is_authenticated %}
+                    <li class="active"><a href="{% url 'orders:my_orders_list' %}">Мои заказы</a></li>
+					<li class="active"><a href="{% url 'users:profile' %}">Личный профиль</a></li>
+					<li><a href="{% url 'users:wishlist' %}">Избранное</a></li>
+                    <li><a href="{% url 'users:logout' %}">Выйти из аккаунта</a></li>
+                    {% else %}
+					<li><a href="{% url 'users:login' %}">Войти</a></li>
+					<li><a href="{% url 'users:register' %}">Регистрация</a></li>
+                    {% endif %}
+				</ul>
+			</div>
+			<div class="clearfix"></div>
+   </div>
+</div>
+</div>
+<div class="header_bottom">
+	<div class="container">
+	 <div class="header_bottom-box">
+		<div class="header_bottom_left">
+			<div class="logo">
+				<a href="{% url 'shop:index' %}"><img src="{% static 'images/logo.png' %}" alt=""/></a>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+		<div class="header_bottom_right">
+            <form action="{% url 'shop:product_search' %}" method="get">
+                <div class="search">
+                    <input type="text" name="search_query" value="Поиск товаров" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Поиск товаров';}">
+                    <input type="submit" value="">
+                </div>
+            </form>
+            <ul class="bag">
+            <a href="{% url "cart:cart_detail" %}"><i class="bag_left"> </i></a>
+                {% with total_items=cart|length %}
+                    {% if total_items > 0 %}
+                <a href="{% url "cart:cart_detail" %}"><li class="bag_right">
+            <p>{{ total_items }} {{ total_items|pluralize_ru:"товар,товара,товаров" }}, {{ cart.get_total_price }}&nbsp;₽</p>
+             </li></a>
+                    {% else %}
+             <a href="{% url "cart:cart_detail" %}"><li class="bag_right"><p>Корзина пуста</li></a>
+                    {% endif %}
+                {% endwith %}
+
+	  			<div class="clearfix"> </div>
+	  		</ul>
+		</div>
+		<div class="clearfix"> </div>
+	</div>
+</div>
+</div>
+<div class="menu">
+	<div class="container">
+		<div class="menu_box">
+	    <ul class="megamenu skyblue">
+			<li><a class="color2" href="{% url 'shop:index' %}">Главная</a></li>
+            <li><a class="color3" href="#">Мужская одежда</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+                                <h4>Мужчинам</h4>
+                            {% if descendants_category_1 %}
+                                <ul>
+                                {% recursetree descendants_category_1 %}
+                                    <li>
+                                        <a href="/category/{{ node.url_path }}/"><span
+                                                class="price1">{{ node.name }}</span></a>
+
+                                        {% if not node.is_leaf_node %}
+{#                                            <ul style="padding-left: 20px">#}
+                                            <ul>
+                                                {{ children }}
+                                            </ul>
+                                        {% endif %}
+                                    </li>
+                                {% endrecursetree %}
+                                </ul>
+                            {% else %}
+                                <p>Для горизонтального меню выводятся категории с id 1,2,3.
+                                Которые создаются при запуске инсталлятора, перед началом заполнения</p>
+                            {% endif %}
+
+
+							</div>
+						</div>
+
+					  </div>
+					</div>
+			</li>
+			<li><a class="color4" href="#">Женская одежда</a>
+				<div class="megapanel">
+					<div class="row">
+						<div class="col1">
+							<div class="h_nav">
+								<h4>Женщинам</h4>
+                                {% if descendants_category_2 %}
+                                    <ul>
+                                        {% recursetree descendants_category_2 %}
+                                            <li>
+                                                <a href="/category/{{ node.url_path }}/"><span
+                                                        class="price1">{{ node.name }}</span></a>
+
+                                                {% if not node.is_leaf_node %}
+{#                                                     <ul style="padding-left: 20px">#}
+                                                    <ul>
+                                                        {{ children }}
+                                                    </ul>
+                                                {% endif %}
+                                            </li>
+                                        {% endrecursetree %}
+                                    </ul>
+                                {% else %}
+                                    <p>Для горизонтального меню выводятся категории с id 1,2,3.
+                                        Которые создаются при запуске инсталлятора, перед началом заполнения</p>
+                                {% endif %}
+							</div>
+						</div>
+
+					  </div>
+					</div>
+			</li>
+            <li><a class="color10" href="404.html">Аксессуары</a></li>
+			<li><a class="color8" href="{% url 'shop:contacts' %}">О магазине</a></li>
+			<div class="clearfix"> </div>
+		 </ul>
+	  </div>
+</div>
+</div>
+
+{% block content %}
+
+{% endblock %}
+
+<div class="footer">
+	<div class="container">
+		<img src="{% static 'images/pay.png' %}" class="img-responsive" alt=""/>
+		<ul class="footer_nav">
+		  <li><a href="{% url 'shop:index' %}">Главная</a></li>
+{#		  <li><a href="#">Blog</a></li>#}
+{#		  <li><a href="#">Shop</a></li>#}
+{#		  <li><a href="#">Media</a></li>#}
+{#		  <li><a href="#">Features</a></li>#}
+{#		  <li><a href="#">About Us</a></li>#}
+		  <li><a href="{% url 'shop:contacts' %}">О магазине</li>
+		</ul>
+{#		<p class="copy">Copyright&copy; 2015 Template by <a href="http://w3layouts.com" target="_blank"> w3layouts</a></p>#}
+	</div>
+</div>
+</body>
+</html>

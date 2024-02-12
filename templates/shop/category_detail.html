@@ -1,0 +1,219 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+ {% load static %}
+    {% load mptt_tags %}
+
+
+    <!--content-->
+    <div class="breadcrumb-box">
+        <div class="container">
+            <div class="menu_box">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="{% url 'shop:index' %}">Главная</a>
+                    </li>
+                    {% for breadcrumb in breadcrumbs %}
+                        {% for bcategory in breadcrumb %}
+                            <li>
+                                <a href="{% url 'shop:show_categories' url_path=bcategory.url_path %}">
+                                    {{ bcategory.name }}</a>
+                            </li>
+                        {% endfor %}
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="men">
+        <div class="container">
+
+            <div class="col-md-3 sidebar">
+                <div class="block block-layered-nav">
+                    <div class="block-title">
+                        <strong><span>Меню каталога</span></strong>
+                    </div>
+                    <div class="block-content">
+                        <dl id="narrow-by-list">
+                            {#                        <dt class="odd">{{ category.name }}</dt>#}
+                            <dd class="odd">
+                                <ol>
+                                    <li><span class="price1">{{ category.name }}</span></li>
+                                    {% if category.children.exists %}
+                                        {% for child in category.children.all %}
+                                            <ul style="padding-left: 20px"><a
+                                                    href="{% url 'shop:show_categories' url_path=child.url_path %}">
+                                                <span class="price1">{{ child.name }}</span></a></ul>
+                                        {% endfor %}
+{#                                    {% else %}#}
+{#                                        <span>Нет добавленных категорий каталога</span>#}
+                                    {% endif %}
+                                </ol>
+                            </dd>
+                            <dt class="last odd">Color</dt>
+                            <dd class="last odd">
+                                <ol>
+                                    <li>
+                                        Black (0)
+                                    </li>
+                                    <li>
+                                        <a href="#">Blue</a>
+                                        (2)
+                                    </li>
+                                </ol>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-9">
+            <div class="mens-toolbar">
+                <div class="sort">
+                    <div class="sort-by">
+                        <form method="get" action="">
+                            <select name="brand_name" id="brand">
+                                <option value="" {% if not request.GET.brand_name %}selected{% endif %}>Все бренды
+                                </option>
+                                {% for brand in unique_brands %}
+                                    <option value="{{ brand }}"
+                                    {% if request.GET.brand_name == brand %}selected{% endif %}>{{ brand }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="gender" id="gender">
+                                <option value="" {% if not request.GET.gender %}selected{% endif %}>Пол</option>
+                                <option value="men">Мужчинам</option>
+                                <option value="woman">Женщинам</option>
+                            </select>
+
+                            <select name="sort" id="sort">
+                                <option value="default" {% if sort_param == 'default' %}selected{% endif %}>Цена
+                                </option>
+                                {#        <option value="name" {% if sort_param == 'name' %}selected{% endif %}>По типу товара</option>#}
+                                <option value="price_max" {% if sort_param == 'price_max' %}selected{% endif %}>Цена по
+                                    убыванию
+                                </option>
+                                <option value="price_min" {% if sort_param == 'price_min' %}selected{% endif %}>Цена по
+                                    возрастанию
+                                </option>
+                            </select>
+                            <button type="submit">Применить сортировку</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+
+            {#    сетка каталога товаров    #}
+        {{ test }}
+            {% if products %}
+                <div class="span_2">
+                {% for product in products %}
+                    {% if forloop.counter0|divisibleby:3 and not forloop.first %}
+                        <div class="span_2">
+                    {% endif %}
+
+                    <div class="col_1_of_single1 span_1_of_single1">
+{#                        <a href="{% url 'shop:product_detail' product.id %}?breadcrumbs={{ breadcrumbs }}">#}
+                        <a href="{% url 'shop:product_detail' product.id %}">
+                            {% if product.images.all %}
+                                <img class="img-responsive" src="{{ IMAGES_URL }}{{ product.images.first.img_small }}"
+                                     alt="{{ product.name }}">
+                            {% else %}
+                                <img class="img-responsive" src="{% static 'images/no_image.png' %}"
+                                     alt="{{ product.name }}">
+                            {% endif %}
+
+                            <h3>{{ product.name }}</h3>
+                            <p>{{ product.brand_name }}</p>
+                            <h4>{{ product.price }} ₽</h4>
+                        </a>
+                    </div>
+                {% endfor %}
+
+            <div class="clearfix"></div>
+            </div>
+            {% else %}
+                <h3>Нет добавленных товаров в этой категории</h3>
+            {% endif %}
+
+
+            <!-- Отображение пагинации -->
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if products.has_previous %}
+                        <li><a href="?page=1{% if sort_param %}&sort={{ sort_param }}{% endif %}">&laquo; первая</a>
+                        </li>
+                        <li><a href="?page=
+            {{ products.previous_page_number }}{% if sort_param %}&sort={{ sort_param }}{% endif %}"
+                               aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    {% endif %}
+
+                    <li class="active"><a href="#">1 <span
+                            class="sr-only">Страница {{ products.number }} из {{ products.paginator.num_pages }}.</span></a>
+                    </li>
+
+                    {% if products.has_next %}
+                        <li><a href="?page=
+                                {{ products.next_page_number }}{% if sort_param %}&sort={{ sort_param }}{% endif %}">следующая</a>
+                        </li>
+                        <li><a href="?page=
+                        {{ products.paginator.num_pages }}{% if sort_param %}&sort={{ sort_param }}{% endif %}">последняя
+                            &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        <!-- //Отображение пагинации -->
+
+            <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+	<!--//content-->
+
+
+
+{#    {% for breadcrumb in breadcrumbs %}#}
+{#    {% for bcategory in breadcrumb %}#}
+{#<ol class="breadcrumb">#}
+{#        <li><a href="{% url 'shop:show_categories' url_path=bcategory.url_path %}">{{ bcategory.name }}</a></li>#}
+{#</ol>#}
+{#    {% endfor %}#}
+{#{% endfor %}#}
+{##}
+{##}
+{#<h3>{{ category.name }}</h3>#}
+{#    {% if category.children.exists %}#}
+{#        <ul>#}
+{#            {% for child in category.children.all %}#}
+{#                <li><a href="{% url 'shop:show_categories' url_path=child.url_path %}">{{ child.name }}</a></li>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    {% endif %}#}
+{##}
+{##}
+{##}
+{#    <h2>Продукты в этой категории:</h2>#}
+{#    {% if products %}#}
+{##}
+{#        <ul>#}
+{#            {% for product in products %}#}
+{##}
+{#                <li>#}
+{#                    <a href="{% url 'shop:product_detail' product.id %}">{{ product.name }}</a>#}
+{#                    - {{ product.price }}</li>#}
+{##}
+{#                {% for image in product.images.all %}#}
+{#                    <img src="{{ IMAGES_URL }}{{ image.img_small }}" alt="{{ product.name }}">#}
+{#                {% endfor %}#}
+{##}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    {% else %}#}
+{#        <h3>Нет товаров в данной категории</h3>#}
+{##}
+{#    {% endif %}#}
+{% endblock %}

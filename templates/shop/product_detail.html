@@ -1,0 +1,215 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+    {% load static %}
+    {% load mptt_tags %}
+{#    {% if path_list %}#}
+{#        Путь:#}
+{##}
+{#        {% for path in path_list %}#}
+{#            <a href="{% url 'shop:category_detail' path.slug %}">{{ path.name }}</a> |#}
+{#        {% endfor %}#}
+{##}
+{#    {% endif %}#}
+
+<!--content-->
+    <div class="breadcrumb-box">
+        <div class="container">
+            <div class="menu_box">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="{% url 'shop:index' %}">Главная</a>
+                    </li>
+                    {% for breadcrumb in breadcrumbs %}
+                        {% for bcategory in breadcrumb %}
+                            <li>
+                                <a href="{% url 'shop:show_categories' url_path=bcategory.url_path %}">
+                                    {{ bcategory.name }}</a>
+                            </li>
+                        {% endfor %}
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
+
+<div class="men">
+    <div class="container">
+        <div class="col-md-9">
+            <div class="clearfix"></div>
+
+    <div class="new-product">
+    <div class="col-md-5 zoom-grid">
+        <div class="flexslider">
+            <ul class="slides">
+                {% for image in images %}
+                    <li data-thumb="{{ IMAGES_URL }}{{ image.img_big }}">
+                        <div class="thumb-image">
+                            <img src="{{ IMAGES_URL }}{{ image.img_big }}"
+                                 alt="{{ product.name }} {{ product.brand }} data-imagezoom=" true"
+                            class="img-responsive"">
+                        </div>
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </div>
+    </div>
+				<div class="col-md-7 dress-info">
+					<div class="dress-name">
+						<h3>{{ product.name }}</h3>
+						<span>{{ product.price }}&nbsp;₽</span>
+						<div class="clearfix"></div>
+						<p class="m_text2">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo</p>
+
+					</div>
+					<div class="span span1">
+						<p class="left">Брэнд</p>
+						<p class="right"><a href="{% url 'shop:show_brand_catalog' brand.id %}">{{ brand.name }}</a></p>
+						<div class="clearfix"></div>
+					</div>
+					<div class="span span2">
+						<p class="left">Состав</p>
+						<p class="right">{{ product.composition }}</p>
+						<div class="clearfix"></div>
+					</div>
+                    <form action="{% url "cart:cart_add" product.id %}" method="post">
+					<div class="span span1">
+						<p class="left">Цвет</p>
+						<p class="right">{{ cart_product_form.color }}</p>
+						<div class="clearfix"></div>
+					</div>
+					<div class="span span2">
+                        <p class="left">Размер</p>
+						<p class="right">{{ cart_product_form.size }}</p>
+						<div class="clearfix"></div>
+					</div>
+                    <div class="span span1">
+                        <p class="left">Количество</p>
+						<p class="right">{{ cart_product_form.quantity }}</p>
+						<div class="clearfix"></div>
+					</div>
+
+                        {% csrf_token %}
+                    <input type="submit" value="Добавить в корзину">
+                    </form>
+
+                <form id="wishlistForm" data-url="{% url 'users:wishlist' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <button type="submit">Добавить в избранное</button>
+                </form>
+
+
+    <script src="{% static 'js/imagezoom.js' %}"></script>
+    <!-- FlexSlider -->
+    <script defer src="{% static 'js/jquery.flexslider.js' %}"></script>
+    <script>
+        // Can also be used with $(document).ready()
+        $(window).load(function() {
+          $('.flexslider').flexslider({
+            animation: "slide",
+            controlNav: "thumbnails"
+          });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $("#wishlistForm").submit(function (event) {
+                event.preventDefault();
+                var form = $(this);
+                var url = form.data("url");
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    success: function (data) {
+                        // Обработка успешного выполнения запроса
+                        if (data.status === "added") {
+                            alert("Товар добавлен в избранное!");
+                        } else if (data.status === "removed") {
+                            alert("Товар удален из избранного.");
+                        }
+                    },
+                    error: function (data) {
+                        // Обработка ошибки
+                        alert("Произошла ошибка при добавлении в избранное.");
+                    }
+                });
+            });
+        });
+    </script>
+
+                </div>
+        <div class="clearfix"></div>
+
+        <!---728x90--->
+        <div class="reviews-tabs">
+            <!-- Main component for a primary marketing message or call to action -->
+            <ul class="nav nav-tabs responsive hidden-xs hidden-sm" id="myTab">
+                <li class="test-class active"><a class="deco-none misc-class" href="#how-to">Дополнительное описание</a>
+                </li>
+                {#        <li class="test-class"><a href="#features">Specifications</a></li>#}
+
+            </ul>
+
+            <div class="tab-content responsive hidden-xs hidden-sm">
+                <div class="tab-pane active" id="how-to">
+                    <p class="tab-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nibh urna,
+                        euismod ut ornare non, volutpat vel tortor. Integer laoreet placerat suscipit. Sed sodales
+                        scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare
+                        id lectus. Proin consectetur nibh quis urna gravida mollis.This tab has icon in consectetur
+                        adipiscing eliconse consectetur adipiscing elit. Vestibulum nibh urna, ctetur adipiscing elit.
+                        Vestibulum nibh urna, t.consectetur adipiscing elit. Vestibulum nibh urna, Vestibulum nibh
+                        urna,it.</p>
+                    <p class="tab-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit,There are many
+                        variations of passages of Lorem Ipsum available,
+                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                </div>
+                <div class="tab-pane" id="features">
+                    <p class="tab-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nibh urna,
+                        euismod ut ornare non, volutpat vel tortor. Integer laoreet placerat suscipit. Sed sodales
+                        scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare
+                        id lectus. Proin consectetur nibh quis urna gravida mollis.This tab has icon in consectetur
+                        adipiscing eliconse consectetur adipiscing elit. Vestibulum nibh urna, ctetur adipiscing elit.
+                        Vestibulum nibh urna, t.consectetur adipiscing elit. Vestibulum nibh urna, Vestibulum nibh
+                        urna,it.</p>
+                    <p class="tab-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit,There are many
+                        variations of passages of Lorem Ipsum available,
+                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    </div>
+
+{##}
+{##}
+{#    <h1>{{ product.name }}</h1>#}
+{#    <h3><a href="{% url 'shop:show_brand_catalog' brand.id %}">{{ brand.name }}</a></h3>#}
+{#    <h3>{{ product.description }}</h3>#}
+{#    <h3>Цена: {{ product.price }}</h3>#}
+{#    <!-- Другие данные о продукте -->#}
+{#    <h2>Изображения продукта</h2>#}
+{#    <ul>#}
+{#        <ul>#}
+{#    {% for image in images %}#}
+{#        <li>#}
+{#            <img src="{% if forloop.first %}{{ IMAGES_URL }}{{ image.img_small }}{% else %}{{ IMAGES_URL }}{{ image.img_thumb }}{% endif %}" alt="{{ product.name }} {{ product.brand }}">#}
+{#        </li>#}
+{#    {% endfor %}#}
+{#</ul>#}
+
+
+{% endblock %}

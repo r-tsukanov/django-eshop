@@ -1,0 +1,25 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<div class="men">
+	<div class="container">
+	    <div class="wishlist">
+            {% if wishlist_items %}
+                <ul>
+                    {% for item in wishlist_items %}
+                        <li>
+                            <a href="{% url 'shop:product_detail' item.product.id %}"><strong>{{ item.product.name }}</strong> брэнд: {{ item.product.brand_name }}</a>
+                            цена: {{ item.product.price }}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            {% else %}
+                <p>Ваш список избранных товаров пуст.</p>
+            {% endif %}
+        </div>
+	</div>
+</div>
+
+{% endblock %}
